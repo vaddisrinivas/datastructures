@@ -9,14 +9,8 @@ Quick points -
     Constitution    -   Vec is and always will be a (pointer, capacity, length) triplet.
 
 */
-use std::convert::TryInto;
-use std::error::Error;
-use std::fmt;
-use std::fmt::{Display, Formatter};
-use std::io::{ErrorKind, Read};
-use std::option::Option::Some;
 
-static mut vec_data: Vec<i8> = Vec::new();
+use rand::Rng;
 
 fn get_input(mut name: &String) -> String {
     println!("{}", name);
@@ -24,34 +18,34 @@ fn get_input(mut name: &String) -> String {
     std::io::stdin().read_line(&mut line);
     line
 }
-pub fn vector_init() {
-    println!("Datastructues with Vectors");
-    let capacity=get_input(&String::from("Please enter the size of Vector, 0, to give none.\nPlease note, giving an right number can help you speed up your code")).trim().parse::<usize>().unwrap();
-    for i in 0..capacity {
-        vector_add(
-            get_input(&format!("enter the {}th element", i + 1))
-                .trim()
-                .parse::<i8>()
-                .unwrap(),
-        )
+
+pub fn vector_init<'a>() -> Vec<u64> {
+    let mut rng = rand::thread_rng();
+    let mut vec_data: Vec<u64> = Vec::new();
+    //let capacity = get_input(&String::from("Please enter the size of Vector, 0, to give none.\nPlease note, giving an right number can help you speed up your code")).trim().parse::<usize>().unwrap();
+    for i in 0..100000 {
+        vector_add(&mut vec_data, rng.gen())
     }
-    unsafe {
-        println!("Your Vector is {:?}", vec_data);
+
+    vec_data
+}
+
+pub fn vector_add(vec_data: &mut Vec<u64>, val: u64) {
+    vec_data.push(val);
+}
+
+pub fn dequeue(vec_data: &mut Vec<u64>) -> Result<(), String> {
+    if vec_data.is_empty() == false {
+        vec_data.remove(0);
+        println!("Dequeued one element from the given DataStructure");
+        Ok(())
+    } else {
+        Err("How could you do that?\nSo mean! Vector didnt have anything at all!".to_owned())
     }
 }
 
-pub fn vector_add(i: i8) {
-    unsafe { vec_data.push(i) };
-}
-
-pub fn dequeue() -> Result<(), String> {
-    /* this prints exception when we are underflowing */
-    unsafe {
-        if vec_data.is_empty() == false {
-            vec_data.remove(0);
-            Ok(())
-        } else {
-            Err("MyError".to_owned())
-        }
-    }
+pub fn search_int(vec_data: &Vec<u64>) -> bool {
+    let mut rng = rand::thread_rng();
+    let rn: u64 = rng.gen();
+    vec_data.contains(&rn)
 }
