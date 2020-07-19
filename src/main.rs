@@ -16,10 +16,12 @@ Generics -
 
 */
 
-use crate::vector_intro::{get_input, insertion_sort, selection_sort, vector_add, vector_init};
-use rand::Rng;
 use std::borrow::Borrow;
 use std::time::SystemTime;
+
+use rand::Rng;
+
+use crate::vector_intro::{get_input, insertion_sort, selection_sort, vector_add, vector_init};
 
 mod vector_intro;
 
@@ -37,25 +39,25 @@ fn main() {
         capacity,
     );
     let mut rng = rand::thread_rng();
-    match get_input(&String::from("Do you want to provide input or do you want to continue with entropy?\n Enter 1 for custom input, 0 for entropy")).trim().parse::<i8>(){
+    match get_input(&String::from("Do you want to provide input or do you want to continue with entropy?\n Enter 1 for custom input, 0 for entropy")).trim().parse::<i8>() {
         Ok(choice) => {
-                match choice {
-        1 => {
+            match choice {
+                1 => {
                     for i in 1..capacity
                     {
-                        vector_add(&mut my_vec, get_input(&String::from(format!("Please enter your element at position {}",i))).trim().parse::<i8>().unwrap())
+                        vector_add(&mut my_vec, get_input(&String::from(format!("Please enter your element at position {}", i))).trim().parse::<i8>().unwrap())
                     }
-                },
-        0 => {
+                }
+                0 => {
                     for i in 1..capacity
                     {
                         vector_add(&mut my_vec, rng.gen())
                     }
-        }
-                    _ => {}
                 }
-        },
-        Err(e) => {},
+                _ => {}
+            }
+        }
+        Err(e) => {}
         _ => {}
     }
     let now = SystemTime::now();
