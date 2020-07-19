@@ -1,38 +1,24 @@
-/*
-The idea of this piece of code is to get accustomed with basics of Vector in Rust
-Quick points -
-    Book url        -   https://doc.rust-lang.org/book/ch08-01-vectors.html
-    stdlib url      -   https://doc.rust-lang.org/std/vec/struct.Vec.html
-    Defination      -   A contiguous growable array type, written Vec<T> but pronounced 'vector'.
-    Allocation      -   Happens as a contigious blocks of memory. Reallocates after exhaustion in
-                        initiation capacity, which can be slow.
-    Constitution    -   Vec is and always will be a (pointer, capacity, length) triplet.
-
-*/
-
 use rand::Rng;
-use std::borrow::Borrow;
 
-fn get_input(mut name: &String) -> String {
+pub fn get_input(mut name: &String) -> String {
     println!("{}", name);
     let mut line = String::new();
     std::io::stdin().read_line(&mut line);
     line
 }
 
-pub fn vector_init<T>(first_elem:  T) -> Vec<T> {
+pub fn vector_init<T>(first_elem: T, capacity: usize) -> Vec<T> {
     let mut rng = rand::thread_rng();
-    let mut vec_data: Vec<T> = Vec::new();
-    //let capacity = get_input(&String::from("Please enter the size of Vector, 0, to give none.\nPlease note, giving an right number can help you speed up your code")).trim().parse::<usize>().unwrap();
-    //vector_add(&mut vec_data,  first_elem);
+    let mut vec_data: Vec<T> = Vec::with_capacity(capacity);
+    vector_add(&mut vec_data, first_elem);
     vec_data
 }
 
-pub fn vector_add <T>(vec_data: &mut Vec<T>, val: T) {
+pub fn vector_add<T>(vec_data: &mut Vec<T>, val: T) {
     vec_data.push(val);
 }
 
-pub fn dequeue(vec_data: &mut Vec<u64>) -> Result<(), String> {
+pub fn dequeue<T>(vec_data: &mut Vec<T>) -> Result<(), String> {
     if vec_data.is_empty() == false {
         vec_data.remove(0);
         println!("Dequeued one element from the given DataStructure");
@@ -42,13 +28,47 @@ pub fn dequeue(vec_data: &mut Vec<u64>) -> Result<(), String> {
     }
 }
 
-pub fn search_int(vec_data: &Vec<u64>) -> bool {
-    let mut rng = rand::thread_rng();
-    let rn: u64 = rng.gen();
-    vec_data.contains(&rn)
+/*
+Insertion sort is one of the most easiest sorting algorithms.
+We loop through the array, compare each element with every other element and arrange it like wise
+ */
+
+pub fn insertion_sort<T: PartialOrd + std::fmt::Debug + Clone>(my_vec: &mut Vec<T>) {
+    println!("INSERTION SORT");
+    let mut i = 0;
+    let mut cp = my_vec.to_vec();
+    println!("Given array {:?}", cp);
+    for i in 1..cp.len() {
+        let mut j = i;
+        println!("Header at -> \t{:?}", cp[i]);
+        while j > 0 && cp[j - 1] > cp[j] {
+            cp.swap(j - 1, j);
+            j -= 1;
+        }
+        println!("{:?}", cp)
+    }
+    println!("________________________________________________________________________________________________");
 }
 
-pub fn sort_linear(vec_data: &mut Vec<u64>) -> &mut Vec<u64> {
-    vec_data.sort();
-    vec_data
+/*
+Selection Sort
+
+ */
+pub fn selection_sort<T: PartialOrd + std::fmt::Debug + Clone>(my_vec: &mut Vec<T>) {
+    println!("SELECTION SORT");
+    let mut cp = my_vec.to_vec();
+    println!("Given array {:?}", cp);
+    for i in 0..cp.len() {
+        let mut min_index = i;
+        println!("Header at -> \t{:?}", cp[i]);
+        //since everything towards the left would hav already been sorted, passing i+1
+        for j in i + 1..cp.len() {
+            if cp[j] < cp[i] {
+                min_index = j;
+            }
+        }
+        cp.swap(i, min_index);
+        println!("{:?}", cp)
+    }
+    println!("________________________________________________________________________________________________");
 }
