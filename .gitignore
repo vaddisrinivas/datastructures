@@ -1,1 +1,6 @@
-/target
+target
+index.html
+.vs
+.vscode
+script.js
+styles.css
