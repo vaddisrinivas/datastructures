@@ -11,6 +11,7 @@ Quick points -
 */
 
 use rand::Rng;
+use std::borrow::Borrow;
 
 fn get_input(mut name: &String) -> String {
     println!("{}", name);
@@ -19,18 +20,15 @@ fn get_input(mut name: &String) -> String {
     line
 }
 
-pub fn vector_init<'a>() -> Vec<u64> {
+pub fn vector_init<T>(first_elem:  T) -> Vec<T> {
     let mut rng = rand::thread_rng();
-    let mut vec_data: Vec<u64> = Vec::new();
+    let mut vec_data: Vec<T> = Vec::new();
     //let capacity = get_input(&String::from("Please enter the size of Vector, 0, to give none.\nPlease note, giving an right number can help you speed up your code")).trim().parse::<usize>().unwrap();
-    for i in 0..100000 {
-        vector_add(&mut vec_data, rng.gen())
-    }
-
+    //vector_add(&mut vec_data,  first_elem);
     vec_data
 }
 
-pub fn vector_add(vec_data: &mut Vec<u64>, val: u64) {
+pub fn vector_add <T>(vec_data: &mut Vec<T>, val: T) {
     vec_data.push(val);
 }
 
@@ -48,4 +46,9 @@ pub fn search_int(vec_data: &Vec<u64>) -> bool {
     let mut rng = rand::thread_rng();
     let rn: u64 = rng.gen();
     vec_data.contains(&rn)
+}
+
+pub fn sort_linear(vec_data: &mut Vec<u64>) -> &mut Vec<u64> {
+    vec_data.sort();
+    vec_data
 }
