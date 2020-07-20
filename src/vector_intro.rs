@@ -62,13 +62,38 @@ pub fn selection_sort<T: PartialOrd + std::fmt::Debug + Clone>(my_vec: &mut Vec<
         let mut min_index = i;
         println!("Header at -> \t{:?}", cp[i]);
         //since everything towards the left would hav already been sorted, passing i+1
-        for j in i + 1..cp.len() {
-            if cp[j] < cp[i] {
+        for j in i+1..cp.len() {
+            if cp[j]<cp[min_index] {
                 min_index = j;
             }
         }
+        println!("the most smallest in next list is -> {:?}",cp[min_index]);
         cp.swap(i, min_index);
         println!("{:?}", cp)
     }
     println!("________________________________________________________________________________________________");
+}
+
+/*
+Bubble sort
+
+checks adjecant numbers, swaps them and continues.
+smokes biggest value to the right
+this can be a very bad thing if all values are in reverse order (may be, i dunno, will check)
+ */
+
+pub fn bubble_sort<T: PartialOrd+ std::fmt::Debug +std::clone::Clone> (my_vec: &mut Vec<T>){
+    println!("BUBBLE SORT");
+    let mut cp = my_vec.to_vec();
+    println!("Given array {:?}", cp);
+    for i in 0..cp.len()-1{
+        for j in 0..cp.len()-1{
+            if cp[j]>cp[j+1]{
+                cp.swap(j,j+1);
+            }
+        }
+        println!("{:?}",cp);
+    }
+
+    println!("Sorted array \n {:?}",cp);
 }
