@@ -21,7 +21,7 @@ use std::time::SystemTime;
 
 use rand::Rng;
 
-use crate::vector_intro::{get_input, insertion_sort, selection_sort, vector_add, vector_init};
+use crate::vector_intro::{get_input, insertion_sort, selection_sort, vector_add, vector_init,bubble_sort};
 
 mod vector_intro;
 
@@ -66,6 +66,7 @@ fn main() {
     println!("{:?}", my_vec);
     selection_sort(&mut my_vec);
 
+    bubble_sort(&mut my_vec);
     match now.elapsed() {
         Ok(elapsed) => println!("{:?}", elapsed.as_millis()),
         Err(e) => println!("error occured {:?}", e),
