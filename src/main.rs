@@ -21,7 +21,8 @@ use std::time::SystemTime;
 
 use rand::Rng;
 
-use crate::vector_intro::{get_input, insertion_sort, selection_sort, vector_add, vector_init,bubble_sort};
+use crate::vector_intro::{bubble_sort, get_input, insertion_sort, selection_sort};
+use std::process::exit;
 
 mod vector_intro;
 
@@ -29,46 +30,73 @@ fn main() {
     /*
     Implementing Vectors with Generics
     */
-    println!("Please provide custom input for the following");
-    let capacity = get_input(&String::from(String::from("Please enter the size of Vector, 0, to give none.\nPlease note, giving an right number can help you speed up your code"))).trim().parse::<usize>().unwrap();
-    let mut my_vec = vector_init(
-        get_input(&String::from("Please enter the first element here"))
-            .trim()
-            .parse::<i8>()
-            .unwrap(),
-        capacity,
-    );
     let mut rng = rand::thread_rng();
-    match get_input(&String::from("Do you want to provide input or do you want to continue with entropy?\n Enter 1 for custom input, 0 for entropy")).trim().parse::<i8>() {
-        Ok(choice) => {
-            match choice {
-                1 => {
-                    for i in 1..capacity
-                    {
-                        vector_add(&mut my_vec, get_input(&String::from(format!("Please enter your element at position {}", i))).trim().parse::<i8>().unwrap())
-                    }
-                }
-                0 => {
-                    for i in 1..capacity
-                    {
-                        vector_add(&mut my_vec, rng.gen())
-                    }
-                }
-                _ => {}
+
+    for i in generate_array_sizes(
+        get_input(&String::from(
+            "Give the max power of 10 you want to test for \
+        (9*10^x would be the range or random list)",
+        ))
+        .trim()
+        .parse::<i64>()
+        .unwrap(),
+    )
+    .iter()
+    {
+        let mut my_vec: Vec<u16> = Vec::with_capacity(*i as usize);
+        for j in 0..*i {
+            vector_add(&mut my_vec, rng.gen())
+        }
+        println!("_____________________________________________________________\
+        ___________________________________");
+        println!(
+            "insertion sort of {} (i64) -> {:?}",
+            i,
+            insertion_sort(&mut my_vec)
+        );
+        println!(
+            "selection  sort of {} (i64) -> {:?}",
+            i,
+            selection_sort(&mut my_vec)
+        );
+        println!(
+            "Bubble sort of {} (i64) -> {:?}",
+            i,
+            bubble_sort(&mut my_vec)
+        );
+        let now = SystemTime::now();
+
+        my_vec.sort();
+        match now.elapsed() {
+            Ok(elapsed) => println!("Standard sort of {} (i64) -> {:?}", i, elapsed),
+            Err(e) => {
+                println!("error occured {:?}", e);
             }
         }
-        Err(e) => {}
-        _ => {}
     }
-    let now = SystemTime::now();
-    insertion_sort(&mut my_vec);
-
-    println!("{:?}", my_vec);
-    selection_sort(&mut my_vec);
-
-    bubble_sort(&mut my_vec);
-    match now.elapsed() {
-        Ok(elapsed) => println!("{:?}", elapsed.as_millis()),
-        Err(e) => println!("error occured {:?}", e),
+}
+fn generate_array_sizes(mut size: i64) -> Vec<i64> {
+    /*
+    increase array sizes as- [100,200..1000,2000,3000..,10000,20000,30000..100000,200000,3lc.10lcs,20lcs,30lcs,1cr
+     */
+    let mut vec_my = Vec::with_capacity(size as usize);
+    let mut i: i64 = 10;
+    let mut max = 10;
+    while size > 0 {
+        for mut c in 1..11 {
+            if c == 10 {
+                break;
+            }
+            vector_add(&mut vec_my, i * c);
+            println!("{:?}", i * c)
+        }
+        i = i * max;
+        println!("{:?}", size);
+        size = size - 1;
     }
+    println!("{:?}", vec_my);
+    vec_my
+}
+fn vector_add<T>(vec_data: &mut Vec<T>, val: T) {
+    vec_data.push(val);
 }
