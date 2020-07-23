@@ -21,7 +21,10 @@ use std::time::SystemTime;
 
 use rand::Rng;
 
-use crate::vector_intro::{bubble_sort, get_input, insertion_sort, selection_sort,rec_insertions_sort, rec_selection_sort};
+use crate::vector_intro::{
+    bubble_sort, get_input, insertion_sort, rec_bubble_sort, rec_insertions_sort,
+    rec_selection_sort, selection_sort,
+};
 use std::process::exit;
 
 mod vector_intro;
@@ -30,7 +33,6 @@ fn main() {
     /*
     Implementing Vectors with Generics
     */
-    let mut rng = rand::thread_rng();
 
     for i in generate_array_sizes(
         get_input(&String::from(
@@ -47,8 +49,10 @@ fn main() {
         for j in 0..*i {
             vector_add(&mut my_vec, rng.gen())
         }
-        println!("_____________________________________________________________\
-        ___________________________________");
+        println!(
+            "_____________________________________________________________\
+        ___________________________________"
+        );
         println!(
             "insertion sort of {} (i64) -> {:?}",
             i,
@@ -65,9 +69,36 @@ fn main() {
             bubble_sort(&mut my_vec)
         );
         let now = SystemTime::now();
-        println!("Recursive insertion sort {:?}",rec_insertions_sort(&mut my_vec.clone(),1 as usize,(*i-1) as usize));
-        println!("Recursive selection sort {:?}",rec_selection_sort(&mut my_vec.clone(),0 as usize,(*i-1) as usize));;
-
+        println!(
+            "Recursive insertion sort {:?}",
+            rec_insertions_sort(&mut my_vec.clone(), 1 as usize, (*i - 1) as usize)
+        );
+        match now.elapsed() {
+            Ok(elapsed) => println!("Recursive insertion  sort of {} (i64) -> {:?}", i, elapsed),
+            Err(e) => {
+                println!("error occured {:?}", e);
+            }
+        }
+        println!(
+            "Recursive selection sort {:?}",
+            rec_selection_sort(&mut my_vec.clone(), 0 as usize, (*i - 1) as usize)
+        );
+        match now.elapsed() {
+            Ok(elapsed) => println!("Recursive selection of {} (i64) -> {:?}", i, elapsed),
+            Err(e) => {
+                println!("error occured {:?}", e);
+            }
+        }
+        println!(
+            "Recursive bubble sort {:?}",
+            rec_bubble_sort(&mut my_vec.clone(), (*i - 1) as usize)
+        );
+        match now.elapsed() {
+            Ok(elapsed) => println!("Recursive bubble  of {} (i64) -> {:?}", i, elapsed),
+            Err(e) => {
+                println!("error occured {:?}", e);
+            }
+        }
         my_vec.sort();
         match now.elapsed() {
             Ok(elapsed) => println!("Standard sort of {} (i64) -> {:?}", i, elapsed),
@@ -75,7 +106,6 @@ fn main() {
                 println!("error occured {:?}", e);
             }
         }
-        exit(0);
     }
 }
 fn generate_array_sizes(mut size: i64) -> Vec<i64> {

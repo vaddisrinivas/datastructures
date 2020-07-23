@@ -1,6 +1,6 @@
 use rand::Rng;
-use std::time::SystemTime;
 use std::process::exit;
+use std::time::SystemTime;
 
 pub fn get_input(mut name: &String) -> String {
     println!("{}", name);
@@ -38,14 +38,13 @@ pub fn insertion_sort<T: PartialOrd + std::fmt::Debug + Clone>(my_vec: &mut Vec<
         while j > 0 && cp[j - 1] > cp[j] {
             cp.swap(j - 1, j);
             j -= 1;
-            println!("{:?}",cp)
         }
     }
     println!("{:?}", cp);
     println!("________________________________________________________________________________________________");
 
     match now.elapsed() {
-        Ok(elapsed) => elapsed.as_millis(),
+        Ok(elapsed) => elapsed.as_micros(),
         Err(e) => {
             println!("error occured {:?}", e);
             1 as u128
@@ -74,7 +73,7 @@ pub fn selection_sort<T: PartialOrd + std::fmt::Debug + Clone>(my_vec: &mut Vec<
     println!("{:?}", cp);
     println!("________________________________________________________________________________________________");
     match now.elapsed() {
-        Ok(elapsed) => elapsed.as_millis(),
+        Ok(elapsed) => elapsed.as_micros(),
         Err(e) => {
             println!("error occured {:?}", e);
             1 as u128
@@ -106,7 +105,7 @@ pub fn bubble_sort<T: PartialOrd + std::fmt::Debug + std::clone::Clone>(
     //    println!("________________________________________________________________________________________________");
 
     match now.elapsed() {
-        Ok(elapsed) => elapsed.as_millis(),
+        Ok(elapsed) => elapsed.as_micros(),
         Err(e) => {
             println!("error occured {:?}", e);
             1 as u128
@@ -117,40 +116,44 @@ pub fn bubble_sort<T: PartialOrd + std::fmt::Debug + std::clone::Clone>(
 /*
 recursive insertion_sort,
  */
-pub fn rec_insertions_sort<T: PartialOrd + std::fmt::Debug + Clone>(cp: &mut Vec<T>, now: usize, size:usize) -> &mut Vec<T> {
-    let mut j=now;
-        while j > 0 && cp[j - 1] > cp[j] {
-            cp.swap(j - 1, j);
-            j -= 1;
-        }
-if (now + 1 <= size) {
-		rec_insertions_sort(cp, now+ 1, size);
-	}
-            println!("rec iter{:?}",cp);
+pub fn rec_insertions_sort<T: PartialOrd + std::fmt::Debug + Clone>(
+    cp: &mut Vec<T>,
+    now: usize,
+    size: usize,
+) -> &mut Vec<T> {
+    let mut j = now;
+    while j > 0 && cp[j - 1] > cp[j] {
+        cp.swap(j - 1, j);
+        j -= 1;
+    }
+    if (now + 1 <= size) {
+        rec_insertions_sort(cp, now + 1, size);
+    }
 
-cp
+    cp
 }
 
 /*
 recursive selection_sort,
  */
 
-pub fn rec_selection_sort<T: PartialOrd + std::fmt::Debug + Clone>(cp: &mut Vec<T>, now: usize, size:usize) -> &mut Vec<T> {
-
-
-    if now<size{
-        rec_selection_sort(cp,now+1,size);
+pub fn rec_selection_sort<T: PartialOrd + std::fmt::Debug + Clone>(
+    cp: &mut Vec<T>,
+    now: usize,
+    size: usize,
+) -> &mut Vec<T> {
+    if now < size {
+        rec_selection_sort(cp, now + 1, size);
     }
-    let mut i=0;
-    let mut min_indxex=now;
-    while i<now{
-        if cp[i]<cp[min_indxex]{
-            min_indxex=i;
+    let mut i = 0;
+    let mut min_indxex = now;
+    while i < now {
+        if cp[i] < cp[min_indxex] {
+            min_indxex = i;
         }
-        i+=1
+        i += 1
     }
-    cp.swap(now,min_indxex);
-            println!("rec sel {:?}",cp);
+    cp.swap(now, min_indxex);
     cp
 }
 
@@ -158,3 +161,16 @@ pub fn rec_selection_sort<T: PartialOrd + std::fmt::Debug + Clone>(cp: &mut Vec<
 recursive bubble_sort,
  */
 
+pub fn rec_bubble_sort<T: PartialOrd + std::fmt::Debug + Clone>(cp: &mut Vec<T>, size: usize) {
+    let mut i = 1;
+    while i < size {
+        if cp[i - 1] < cp[i] {
+            cp.swap(i - 1, i);
+        }
+        i += 1
+    }
+    if size <= 1 {
+        println!("{:?}", cp)
+    }
+    rec_bubble_sort(cp, size - 1)
+}
