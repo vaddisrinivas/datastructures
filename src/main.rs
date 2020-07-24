@@ -19,7 +19,7 @@ Generics -
 use std::borrow::Borrow;
 use std::time::SystemTime;
 
-use rand::Rng;
+use rand::{random, Rng};
 
 use crate::vector_intro::{
     bubble_sort, get_input, insertion_sort, rec_bubble_sort, rec_insertions_sort,
@@ -46,6 +46,8 @@ fn main() {
     .iter()
     {
         let mut my_vec: Vec<u16> = Vec::with_capacity(*i as usize);
+        let mut rng = rand::thread_rng();
+
         for j in 0..*i {
             vector_add(&mut my_vec, rng.gen())
         }
@@ -91,7 +93,7 @@ fn main() {
         }
         println!(
             "Recursive bubble sort {:?}",
-            rec_bubble_sort(&mut my_vec.clone(), (*i - 1) as usize)
+            rec_bubble_sort(&mut my_vec.clone(), (*i) as usize)
         );
         match now.elapsed() {
             Ok(elapsed) => println!("Recursive bubble  of {} (i64) -> {:?}", i, elapsed),

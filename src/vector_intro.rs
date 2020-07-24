@@ -161,7 +161,10 @@ pub fn rec_selection_sort<T: PartialOrd + std::fmt::Debug + Clone>(
 recursive bubble_sort,
  */
 
-pub fn rec_bubble_sort<T: PartialOrd + std::fmt::Debug + Clone>(cp: &mut Vec<T>, size: usize) {
+pub fn rec_bubble_sort<T: PartialOrd + std::fmt::Debug + Clone>(
+    cp: &mut Vec<T>,
+    size: usize,
+) -> &mut Vec<T> {
     let mut i = 1;
     while i < size {
         if cp[i - 1] < cp[i] {
@@ -169,8 +172,9 @@ pub fn rec_bubble_sort<T: PartialOrd + std::fmt::Debug + Clone>(cp: &mut Vec<T>,
         }
         i += 1
     }
-    if size <= 1 {
-        println!("{:?}", cp)
+    if size > 1 {
+        return rec_bubble_sort(cp, size - 1);
+    } else {
+        cp
     }
-    rec_bubble_sort(cp, size - 1)
 }
