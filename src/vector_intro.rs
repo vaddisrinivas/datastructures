@@ -1,4 +1,5 @@
 use rand::Rng;
+use std::cmp::min;
 use std::process::exit;
 use std::time::SystemTime;
 
@@ -29,7 +30,6 @@ We loop through the array, compare each element with every other element and arr
  */
 
 pub fn insertion_sort<T: PartialOrd + std::fmt::Debug + Clone>(my_vec: &mut Vec<T>) -> u128 {
-    println!("INSERTION SORT");
     let mut i = 0;
     let mut cp = my_vec.to_vec();
     let now = SystemTime::now();
@@ -40,8 +40,6 @@ pub fn insertion_sort<T: PartialOrd + std::fmt::Debug + Clone>(my_vec: &mut Vec<
             j -= 1;
         }
     }
-    println!("{:?}", cp);
-    println!("________________________________________________________________________________________________");
 
     match now.elapsed() {
         Ok(elapsed) => elapsed.as_micros(),
@@ -57,7 +55,6 @@ Selection Sort
 
  */
 pub fn selection_sort<T: PartialOrd + std::fmt::Debug + Clone>(my_vec: &mut Vec<T>) -> u128 {
-    println!("SELECTION SORT");
     let mut cp = my_vec.to_vec();
     let now = SystemTime::now();
     for i in 0..cp.len() {
@@ -70,8 +67,6 @@ pub fn selection_sort<T: PartialOrd + std::fmt::Debug + Clone>(my_vec: &mut Vec<
         }
         cp.swap(i, min_index);
     }
-    println!("{:?}", cp);
-    println!("________________________________________________________________________________________________");
     match now.elapsed() {
         Ok(elapsed) => elapsed.as_micros(),
         Err(e) => {
@@ -91,7 +86,6 @@ this can be a very bad thing if all values are in reverse order (may be, i dunno
 pub fn bubble_sort<T: PartialOrd + std::fmt::Debug + std::clone::Clone>(
     my_vec: &mut Vec<T>,
 ) -> u128 {
-    println!("BUBBLE SORT");
     let mut cp = my_vec.to_vec();
     let now = SystemTime::now();
     for i in 0..cp.len() - 1 {
@@ -101,7 +95,7 @@ pub fn bubble_sort<T: PartialOrd + std::fmt::Debug + std::clone::Clone>(
             }
         }
     }
-    println!("Sorted array \n {:?}", cp);
+    //println!("Sorted array \n {:?}", cp);
     //    println!("________________________________________________________________________________________________");
 
     match now.elapsed() {
@@ -177,4 +171,90 @@ pub fn rec_bubble_sort<T: PartialOrd + std::fmt::Debug + Clone>(
     } else {
         cp
     }
+}
+
+/*
+
+Iterative merge sort using queues
+*/
+
+pub fn iter_merge_sort<T: PartialOrd + std::fmt::Debug + Clone + Copy>(
+    my_vec: &mut Vec<T>,
+) -> u128 {
+    let now = SystemTime::now();
+    let mut cp = my_vec.to_vec();
+    let mut n = my_vec.len();
+    let mut res = my_vec.to_vec();
+    let mut window = 1;
+    while window < n {
+        let mut i = 0;
+        while i < n {
+            let upper = min(i + 2 * window, n);
+            let mid = min(i + window, n);
+            //println!("{:?} {:?} {:?} {:?} ",i,mid,upper,cp);
+            merge_subarrays(&cp[i..mid], &cp[mid..upper], &mut res[i..upper]);
+            cp[i..upper].copy_from_slice(&res[i..upper]);
+            i += 2 * window;
+        }
+        window *= 2;
+    }
+    match now.elapsed() {
+        Ok(elapsed) => elapsed.as_micros(),
+        Err(e) => {
+            println!("error occured {:?}", e);
+            1 as u128
+        }
+    }
+}
+
+fn merge_subarrays<T: PartialOrd + std::fmt::Debug + Clone + Copy>(
+    a: &[T],
+    b: &[T],
+    res: &mut [T],
+) {
+    let mut left = 0; // Head of left pile.
+    let mut right = 0; // Head of right pile.
+    let mut index = 0;
+
+    // Compare element and insert back to result array.
+    while left < a.len() && right < b.len() {
+        if a[left] <= b[right] {
+            res[index] = a[left];
+            index += 1;
+            left += 1;
+        } else {
+            res[index] = b[right];
+            index += 1;
+            right += 1;
+        }
+    }
+
+    // Copy the reset elements to returned array.
+    // `memcpy` may be more performant than for-loop assignment.
+    if left < a.len() {
+        res[index..].copy_from_slice(&a[left..]);
+    }
+    if right < b.len() {
+        res[index..].copy_from_slice(&b[right..]);
+    }
+}
+
+pub fn rec_merge_sort<T: PartialOrd + std::fmt::Debug + Clone + Copy>(my_vec: &mut Vec<T>) {
+        let mut cp = my_vec.to_vec();
+
+    let mid = cp.len() / 2;
+    if mid == 0 {
+        return ();
+    }
+    rec_merge_sort(&mut cp[..mid].to_vec());
+    rec_merge_sort(&mut cp[mid..].to_vec());
+
+    // Create an array to store intermediate result.
+    let mut ret = my_vec.to_vec();
+
+    // Merge the two piles.
+    merge_subarrays(&cp[..mid], &cp[mid..], &mut ret[..]);
+
+    // Copy back the result back to original array.
+    cp.copy_from_slice(&ret);
 }
