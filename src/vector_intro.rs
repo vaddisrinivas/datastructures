@@ -239,8 +239,12 @@ fn merge_subarrays<T: PartialOrd + std::fmt::Debug + Clone + Copy>(
     }
 }
 
+/*
+
+Iterative merge sort using queues
+*/
 pub fn rec_merge_sort<T: PartialOrd + std::fmt::Debug + Clone + Copy>(my_vec: &mut Vec<T>) {
-        let mut cp = my_vec.to_vec();
+    let mut cp = my_vec.to_vec();
 
     let mid = cp.len() / 2;
     if mid == 0 {
@@ -257,4 +261,40 @@ pub fn rec_merge_sort<T: PartialOrd + std::fmt::Debug + Clone + Copy>(my_vec: &m
 
     // Copy back the result back to original array.
     cp.copy_from_slice(&ret);
+}
+
+pub fn quick_sort<T: PartialOrd + std::fmt::Debug + Clone + Copy>(
+    mut my_vec: &mut Vec<T>,
+    start: usize,
+    end: usize,
+) {
+    let mut pi;
+    if start < end {
+        pi = partition(&mut my_vec, start, end);
+        if pi == 0 || pi == my_vec.len() {
+            println!("Touching limits");
+            return ();
+        }
+        quick_sort(&mut my_vec, start, pi - 1);
+        quick_sort(&mut my_vec, pi + 1, end);
+    }
+}
+
+fn partition<T: PartialOrd + std::fmt::Debug + Clone + Copy>(
+    mut my_vec: &mut Vec<T>,
+    start: usize,
+    end: usize,
+) -> usize {
+    let pivot = my_vec[end];
+
+    let mut pi = start;
+
+    for i in start..end {
+        if my_vec[i] <= pivot {
+            &mut my_vec.swap(i, pi);
+            pi += 1;
+        }
+    }
+    &mut my_vec.swap(pi, end);
+    pi
 }

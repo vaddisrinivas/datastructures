@@ -22,8 +22,8 @@ use std::time::SystemTime;
 use rand::{random, Rng};
 
 use crate::vector_intro::{
-    bubble_sort, get_input, insertion_sort, iter_merge_sort, rec_bubble_sort, rec_insertions_sort,
-    rec_merge_sort, rec_selection_sort, selection_sort,
+    bubble_sort, get_input, insertion_sort, iter_merge_sort, quick_sort, rec_bubble_sort,
+    rec_insertions_sort, rec_merge_sort, rec_selection_sort, selection_sort,
 };
 use std::process::exit;
 
@@ -70,6 +70,13 @@ fn main() {
             i,
             bubble_sort(&mut my_vec)
         );
+                println!(
+            "iterative merge sort took - {:?}",
+            iter_merge_sort(&mut my_vec)
+        );
+        if *i>3000{
+            continue
+        }
         let now = SystemTime::now();
         rec_insertions_sort(&mut my_vec.clone(), 1 as usize, (*i - 1) as usize);
         match now.elapsed() {
@@ -91,16 +98,7 @@ fn main() {
         }
 
         rec_bubble_sort(&mut my_vec.clone(), (*i) as usize);
-        match now.elapsed() {
-            Ok(elapsed) => println!("Recursive bubble  of {} (i64) -> {:?}", i, elapsed),
-            Err(e) => {
-                println!("error occured {:?}", e);
-            }
-        }
-        println!(
-            "iterative merge sort took - {:?}",
-            iter_merge_sort(&mut my_vec)
-        );
+
         rec_merge_sort(&mut my_vec);
         match now.elapsed() {
             Ok(elapsed) => println!(
@@ -112,12 +110,33 @@ fn main() {
                 println!("error occured {:?}", e);
             }
         }
-        my_vec.sort();
+        match now.elapsed() {
+            Ok(elapsed) => println!("Recursive bubble  of {} (i64) -> {:?}", i, elapsed),
+            Err(e) => {
+                println!("error occured {:?}", e);
+            }
+        }
+
+        let res_quick = quick_sort(&mut my_vec.clone(), 0, my_vec.len() - 1);
+        match now.elapsed() {
+            Ok(elapsed) => println!("quick sort of {} (i64) -> {:?}", i, elapsed.as_micros()),
+            Err(e) => {
+                println!("error occured {:?}", e);
+            }
+        }
+
+        let sorted = my_vec.sort();
         match now.elapsed() {
             Ok(elapsed) => println!("Standard sort of {} (i64) -> {:?}", i, elapsed.as_micros()),
             Err(e) => {
                 println!("error occured {:?}", e);
             }
+        }
+
+        if res_quick == sorted {
+            println!("Quicksort fuking works")
+        } else {
+            panic!("Quicksort breaks here {:?}", my_vec)
         }
     }
 }
