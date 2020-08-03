@@ -9,7 +9,7 @@ fn get_input(mut name: &String) -> String {
     line
 }
 
-winter is coming
+winter is coming now
 fn main() {
     let mut NQ: Vec<i64> = get_input(&String::from(""))
         .trim()
